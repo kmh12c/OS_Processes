@@ -39,6 +39,13 @@ static int pagelines;
 	  else if (proc_nr(rp) < 0) 	printf("[%2d] ", proc_nr(rp)); 	\
 	  else 				printf(" %2d  ", proc_nr(rp));
 
+#define PROCIPCLOOP(rp, oldrp) \
+	pagelines = 0; \
+	for (rp = oldrp; rp < END_PROC_ADDR; rp++) { \
+	  oldrp = BEG_PROC_ADDR; \
+	  if (++pagelines >= LINES) { oldrp = rp; printf("--more--\n"); break; }\
+	  printf("%-5s ", rp->name);  \
+
 #define click_to_round_k(n) \
 	((unsigned) ((((unsigned long) (n) << CLICK_SHIFT) + 512) / 1024))
 
@@ -345,12 +352,59 @@ void proctab_dmp(void)
 }
 #endif				/* defined(__i386__) */
 
+/*===========================================================================*
+ *				proctabipc_dmp    				                             *
+ *===========================================================================*/
+#if defined(__i386__)
+void proctabipc_dmp(void)
+{
+    /* Print number of messages passed between processes */
+    
+    register struct proc *rp;
+    static struct proc *oldrp = BEG_PROC_ADDR;
+    int r;
+    
+    /* Obtain fresh copy of the process table */
+    if ((r = sys_getproctab(proc)) != OK) {
+        printf("IS: warning: couldn't get copy of the process table");
+        return;
+    }
+    
+    /* Print header */
+    printf("------ Kevin and Kayla, Message Table Dump ------\n");
+    
+    printf("name pid");
+    for (int index = 0; index < NR_TASKS + NR_PROCS; ++index) {
+        printf("%5d", index);
+    }
+    
+    int index = 0;
+    PROCLOOPIPC(rp, oldrp)      /* loop through processes in process table */
+      printf("%4d", index++);   /* state and increment process index */
+      
+      /* print the number of messages sent to each receiving process */
+      for (int receive_num = 0; receive_num < NR_TASKS + NR_PROCS; ++receive_num) {
+          printf("%5d", rp->p_message_cnt[receive_num]);
+      }
+    }
+}
+#endif				/* defined(__i386__) */
+
 #if defined(__arm__)
 void proctab_dmp(void)
 {
     /* LSC FIXME: Not implemented for arm */
 }
 #endif				/* defined(__arm__) */
+
+
+
+#define PROCIPCLOOP(rp, oldrp) \
+	pagelines = 0; \
+	for (rp = oldrp; rp < END_PROC_ADDR; rp++) { \
+	  oldrp = BEG_PROC_ADDR; \
+	  if (++pagelines >= LINES) { oldrp = rp; printf("--more--\n"); break; }\
+	  printf("%-5s ", rp->name);  \
 
 /*===========================================================================*
  *				procstack_dmp  				     *

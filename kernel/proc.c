@@ -950,7 +950,33 @@ int mini_send(
 
 	RTS_SET(caller_ptr, RTS_SENDING);
 	caller_ptr->p_sendto_e = dst_e;
-
+    
+    /* Update messages count in caller proc */
+    register struct proc *rp;
+    static struct proc *oldrp = BEG_PROC_ADDR;
+    int r;
+    
+    /* Obtain a fresh copy of the current process table. */
+    if ((r = sys_getproctab(proc)) != OK) {
+        printf("IS: warning: couldn't get copy of process table: %d\n", r);
+        return;
+    }
+    
+    /* Match dst_ptr to one of the pointers in the process table */
+    int proc_num = 0;
+    
+    for (rp = oldrp; rp < END_PROC_ADDR; rp++) {
+        oldrp = BEG_PROC_ADDR;
+        
+        if (rp == dst_ptr) {
+            caller_ptr->p_message_cnt[proc_num]++;
+            break;
+        } 
+        else {
+            proc_num++;
+        }
+    }
+    
 	/* Process is now blocked.  Put in on the destination's queue. */
 	assert(caller_ptr->p_q_link == NULL);
 	xpp = &dst_ptr->p_caller_q;		/* find end of list */

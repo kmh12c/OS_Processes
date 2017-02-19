@@ -80,7 +80,9 @@ struct proc {
   char p_name[PROC_NAME_LEN];	/* name of the process, including \0 */
 
   endpoint_t p_endpoint;	/* endpoint number, generation-aware */
-
+  
+  int p_message_cnt[NR_TASKS + NR_PROCS];
+  
   message p_sendmsg;		/* Message from this process if SENDING */
   message p_delivermsg;		/* Message for this process if MF_DELIVERMSG */
   vir_bytes p_delivermsg_vir;	/* Virtual addr this proc wants message at */
