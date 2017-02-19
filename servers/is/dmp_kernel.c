@@ -397,15 +397,6 @@ void proctab_dmp(void)
 }
 #endif				/* defined(__arm__) */
 
-
-
-#define PROCIPCLOOP(rp, oldrp) \
-	pagelines = 0; \
-	for (rp = oldrp; rp < END_PROC_ADDR; rp++) { \
-	  oldrp = BEG_PROC_ADDR; \
-	  if (++pagelines >= LINES) { oldrp = rp; printf("--more--\n"); break; }\
-	  printf("%-5s ", rp->name);  \
-
 /*===========================================================================*
  *				procstack_dmp  				     *
  *===========================================================================*/
