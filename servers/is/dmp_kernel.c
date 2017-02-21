@@ -384,7 +384,7 @@ void proctabipc_dmp(void)
           break; 
       }
       
-	  printf("%-5s ", rp->name);
+	  printf("%-5s ", rp->p_name);
       printf("%4d", index++);   /* state and increment process index */
       
       /* print the number of messages sent to each receiving process */
