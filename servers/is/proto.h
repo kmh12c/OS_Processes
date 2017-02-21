@@ -13,6 +13,7 @@ void vm_dmp(void);
 void proctab_dmp(void);
 void procstack_dmp(void);
 void privileges_dmp(void);
+void proctabipc_dmp(void);
 void image_dmp(void);
 void irqtab_dmp(void);
 void kmessages_dmp(void);

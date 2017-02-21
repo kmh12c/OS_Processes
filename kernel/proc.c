@@ -887,6 +887,9 @@ int mini_send(
   dst_p = _ENDPOINT_P(dst_e);
   dst_ptr = proc_addr(dst_p);
 
+  //count messages as they are sent
+  ++(caller_ptr->p_message_cnt[dst_ptr->p_nr + NR_TASKS]);
+
   if (RTS_ISSET(dst_ptr, RTS_NO_ENDPOINT))
   {
 	return EDEADSRCDST;
@@ -951,34 +954,26 @@ int mini_send(
 	RTS_SET(caller_ptr, RTS_SENDING);
 	caller_ptr->p_sendto_e = dst_e;
     
-    /* Update messages count in caller proc */
-    register struct proc *rp = BEG_PROC_ADDR;
-    int r;
-    
-    /* Obtain a fresh copy of the current process table. */
-    if ((r = sys_getproctab(proc)) != OK) {
-        printf("IS: warning: couldn't get copy of process table: %d\n", r);
-        return;
-    }
-    
-    /* Match dst_ptr to one of the pointers in the process table */
-    int proc_num = 0;
-    
-    while (rp < END_PROC_ADDR) {
-        /* Once the destination process pointer is found */
-        if (rp == dst_ptr) {
-            /* Increment the message-sent count */
-            caller_ptr->p_message_cnt[proc_num]++;
-            break;
-        } 
-        else {
-            /* Otherwise, increment to the next proc in the array */
-            proc_num++;
-        }
+
+    // /* Update messages count in caller proc */
+    // register struct proc *rp = BEG_PROC_ADDR;
+    // int r;
+  
+    // while (rp < END_PROC_ADDR) {
+    //     /* Once the destination process pointer is found */
+    //     if (rp == dst_ptr) {
+    //          /*Increment the message-sent count */
+    //         caller_ptr->p_message_cnt[proc_num]++;
+    //         break;
+    //     } 
+    //     else {
+    //         /* Otherwise, increment to the next proc in the array */
+    //         proc_num++;
+    //     }
         
-        /* increment pointer */
-        rp++;
-    }
+    //     /* increment pointer */
+    //     rp++;
+    // }
     
 	/* Process is now blocked.  Put in on the destination's queue. */
 	assert(caller_ptr->p_q_link == NULL);

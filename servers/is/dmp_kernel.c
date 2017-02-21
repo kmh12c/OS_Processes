@@ -365,7 +365,7 @@ void proctabipc_dmp(void)
     int r;
     
     /* Obtain fresh copy of the process table */
-    if ((r = sys_getproctab(proc)) != OK) {
+    if (sys_getproctab(proc) != OK) {
         printf("IS: warning: couldn't get copy of the process table");
         return;
     }

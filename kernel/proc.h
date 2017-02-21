@@ -81,7 +81,7 @@ struct proc {
 
   endpoint_t p_endpoint;	/* endpoint number, generation-aware */
   
-  int p_message_cnt[NR_TASKS + NR_PROCS];
+  int p_message_cnt[NR_TASKS + NR_PROCS]; /*to count the number of messages*/
   
   message p_sendmsg;		/* Message from this process if SENDING */
   message p_delivermsg;		/* Message for this process if MF_DELIVERMSG */
