@@ -952,8 +952,7 @@ int mini_send(
 	caller_ptr->p_sendto_e = dst_e;
     
     /* Update messages count in caller proc */
-    register struct proc *rp;
-    static struct proc *oldrp = BEG_PROC_ADDR;
+    register struct proc *rp = BEG_PROC_ADDR;
     int r;
     
     /* Obtain a fresh copy of the current process table. */
@@ -965,16 +964,20 @@ int mini_send(
     /* Match dst_ptr to one of the pointers in the process table */
     int proc_num = 0;
     
-    for (rp = oldrp; rp < END_PROC_ADDR; rp++) {
-        oldrp = BEG_PROC_ADDR;
-        
+    while (rp < END_PROC_ADDR) {
+        /* Once the destination process pointer is found */
         if (rp == dst_ptr) {
+            /* Increment the message-sent count */
             caller_ptr->p_message_cnt[proc_num]++;
             break;
         } 
         else {
+            /* Otherwise, increment to the next proc in the array */
             proc_num++;
         }
+        
+        /* increment pointer */
+        rp++;
     }
     
 	/* Process is now blocked.  Put in on the destination's queue. */
