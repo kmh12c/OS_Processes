@@ -39,13 +39,6 @@ static int pagelines;
 	  else if (proc_nr(rp) < 0) 	printf("[%2d] ", proc_nr(rp)); 	\
 	  else 				printf(" %2d  ", proc_nr(rp));
 
-#define PROCIPCLOOP(rp, oldrp) \
-	pagelines = 0; \
-	for (rp = oldrp; rp < END_PROC_ADDR; rp++) { \
-	  oldrp = BEG_PROC_ADDR; \
-	  if (++pagelines >= LINES) { oldrp = rp; printf("--more--\n"); break; }\
-	  printf("%-5s ", rp->name);  \
-
 #define click_to_round_k(n) \
 	((unsigned) ((((unsigned long) (n) << CLICK_SHIFT) + 512) / 1024))
 
@@ -379,7 +372,19 @@ void proctabipc_dmp(void)
     }
     
     int index = 0;
-    PROCLOOPIPC(rp, oldrp)      /* loop through processes in process table */
+	pagelines = 0;
+    
+    /* loop through processes in process table */
+	for (rp = oldrp; rp < END_PROC_ADDR; rp++) {
+	  oldrp = BEG_PROC_ADDR;
+	  
+      if (++pagelines >= LINES) {
+          oldrp = rp;
+          printf("--more--\n"); 
+          break; 
+      }
+      
+	  printf("%-5s ", rp->name);
       printf("%4d", index++);   /* state and increment process index */
       
       /* print the number of messages sent to each receiving process */
