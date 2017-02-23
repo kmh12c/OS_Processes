@@ -389,7 +389,7 @@ void proctabipc_dmp(void)
       printf("%4d", (index++) - NR_TASKS);   /* state and increment process index */
       
       /* print the number of messages sent to each receiving process */
-      for (int receive_num = 0; receive_num < NR_TASKS + NR_PROCS; ++receive_num) {
+      for (int receive_num = 0; receive_num < NR_TASKS + NR_PROCS && receive_num < 9; ++receive_num) {
           printf("%5d", rp->p_message_cnt[receive_num]);
       }
       printf("\n");
