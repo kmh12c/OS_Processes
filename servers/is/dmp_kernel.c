@@ -366,7 +366,7 @@ void proctabipc_dmp(void)
     /* Print header */
     printf("------ Kevin and Kayla, Message Table Dump ------\n");
     
-    printf("name pid");
+    printf("name       pid");
     for (int index = 0; index < NR_TASKS + NR_PROCS && index < 11; ++index) {
         printf("%5d", index - NR_TASKS);
     }
@@ -385,7 +385,7 @@ void proctabipc_dmp(void)
           break; 
       }
       
-	  printf("%-14s ", rp->p_name);
+	  printf("%-10s ", rp->p_name);
       printf("%4d", (index++) - NR_TASKS);   /* state and increment process index */
       
       /* print the number of messages sent to each receiving process */
