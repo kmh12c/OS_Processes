@@ -368,8 +368,9 @@ void proctabipc_dmp(void)
     
     printf("name pid");
     for (int index = 0; index < NR_TASKS + NR_PROCS; ++index) {
-        printf("%5d", index);
+        printf("%5d", index - NR_TASKS);
     }
+    printf("\n");
     
     int index = 0;
 	pagelines = 0;
@@ -385,12 +386,13 @@ void proctabipc_dmp(void)
       }
       
 	  printf("%-5s ", rp->p_name);
-      printf("%4d", index++);   /* state and increment process index */
+      printf("%4d", (index++) - NR_TASKS);   /* state and increment process index */
       
       /* print the number of messages sent to each receiving process */
       for (int receive_num = 0; receive_num < NR_TASKS + NR_PROCS; ++receive_num) {
           printf("%5d", rp->p_message_cnt[receive_num]);
       }
+      printf("\n");
     }
 }
 #endif				/* defined(__i386__) */
